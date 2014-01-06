@@ -16,9 +16,9 @@ class ApplicationController < ActionController::Base
     after_filter  :debug_api
   end
 
-  if Rails.env.production?
-    around_filter :notify_exceptions
-  end
+  #if Rails.env.production?
+  #  around_filter :notify_exceptions
+  #end
 
   protected
 
@@ -106,13 +106,13 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account
-    return nil unless request.ssl?
+#    return nil unless request.ssl?
     @current_account ||=
       session['account_id'] ? Account.active.find_by_id(session['account_id']) : nil
   end
 
   def current_organization
-    return nil unless request.ssl?
+#    return nil unless request.ssl?
     @current_organization ||=
       session['organization_id'] ? Organization.find_by_id(session['organization_id']) : nil
   end
@@ -155,7 +155,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_ssl
-    Thread.current[:ssl] = request.ssl?
+    Thread.current[:ssl] = true
   end
 
   # Email production exceptions to us. Once every 2 minutes at most, per process.

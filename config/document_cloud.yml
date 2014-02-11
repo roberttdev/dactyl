@@ -1,7 +1,7 @@
 <% secrets = YAML.load_file('./secrets/secrets.yml')[ENV['RAILS_ENV'] || "development"] %>
 defaults: &defaults
   cloud_crowd_server:   http://localhost:8080
-  server_root:          localhost
+  server_root:          localhost:1234
   aws_zone:             us-east-1c
   preconfigured_ami_id: ami-01aae468
 

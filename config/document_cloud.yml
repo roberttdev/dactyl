@@ -4,9 +4,11 @@ defaults: &defaults
   server_root:          localhost:1234
   aws_zone:             us-east-1c
   preconfigured_ami_id: ami-01aae468
+  ssl_on:               true
 
 development:
   <<: *defaults
+  ssl_on: false
 
 staging:
   <<: *defaults

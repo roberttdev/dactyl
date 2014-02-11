@@ -24,7 +24,7 @@ class AuthenticationController < ApplicationController
       flash[:error] = "Invalid email or password."
     end
     begin
-      if referrer = request.env["HTTP_REFERER"]
+      if referrer = request.env["HTTP_REFERER"] && DC_CONFIG['ssl_on']
         redirect_to referrer.sub(/^http:/, 'https:')
       end
     rescue RedirectBackError => e

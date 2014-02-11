@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   filter_parameter_logging :password
 
-  before_filter :set_ssl
+  #before_filter :set_ssl
 
   if Rails.env.development?
     around_filter :perform_profile
@@ -100,13 +100,14 @@ class ApplicationController < ActionController::Base
   end
 
   def secure_only
-    if !request.ssl? && (request.format.html? || request.format.nil?)
+    if !request.ssl? && (request.format.html? || request.format.nil?) && DC_CONFIG['ssl_on']
       redirect_to DC.server_root(:force_ssl => true) + request.request_uri
     end
   end
 
+  #Return current account reference.  If SSL is active, then don't return account unless the request is done over HTTPS
   def current_account
-#    return nil unless request.ssl?
+    return nil if (DC_CONFIG['ssl_on'] && !request.ssl?)
     @current_account ||=
       session['account_id'] ? Account.active.find_by_id(session['account_id']) : nil
   end

@@ -9,16 +9,16 @@ class ApplicationController < ActionController::Base
 
   filter_parameter_logging :password
 
-  #before_filter :set_ssl
+  before_filter :set_ssl
 
   if Rails.env.development?
     around_filter :perform_profile
     after_filter  :debug_api
   end
 
-  #if Rails.env.production?
-  #  around_filter :notify_exceptions
-  #end
+  if Rails.env.production?
+    around_filter :notify_exceptions
+  end
 
   protected
 

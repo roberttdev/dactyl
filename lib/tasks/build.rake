@@ -26,12 +26,12 @@ namespace :build do
         destination_file.write template.result( binding )
       end
 
-      js_namespace = 'DV'
-      viewer = Rails.root.join("../document-viewer/public/javascripts/DV/schema/translation.#{language_code}.js")
-      File.open( viewer, 'w' ) do | destination_file |
-        translation_strings = dictionary['viewer']
-        destination_file.write template.result( binding )
-      end
+      #js_namespace = 'DV'
+      #viewer = Rails.root.join("../document-viewer/public/javascripts/DV/schema/translation.#{language_code}.js")
+      #File.open( viewer, 'w' ) do | destination_file |
+      #  translation_strings = dictionary['viewer']
+      #  destination_file.write template.result( binding )
+      #end
 
     end
   end

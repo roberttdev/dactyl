@@ -32,7 +32,7 @@ common: &common
   # The placeholder text in the search input box.
 
   
-  description: Description
+  description: Notes
   # Used as placeholder text in the Document information
   # dialog
 
@@ -402,9 +402,10 @@ workspace:
   # Can be opened by selecting one or more documents then 
   # selecting "Edit Document Information" from the Edit menu
   title_of_document: Title of this document
-  source_of_document: The source from which you obtained this document
-  paragraph_description_of_document: Paragraph description of this document
-  related_url_of_document: URL of the web article that refers to this document
+  study_of_document: The study this file pertains to
+  source_of_document: The type of source that classifies this document
+  paragraph_description_of_document: Notes regarding this document
+  related_url_of_document: Reference for this source (usually a URL)
   embed_url_of_document: "Most users won't need to add this. URL of the page on your site where this document is embedded"
 
 
@@ -522,7 +523,7 @@ workspace:
   edit_details: edit details
   apply_all_files: apply to all files
   apply_fields_all_files: apply this description, source, and access level to all files
-  language: language
+  language: Language
   shared_with_you_by: Shared with you by %s
   must_have_doc_title:
   - Please enter a title for the document
@@ -678,9 +679,10 @@ workspace:
   # "Edit" menu of the toolbar
   edit_document_info: Edit Document Information
   title: Title
-  source: Source
+  study: Study
+  source: Source Type
   access_level: Access Level
-  related_article_url: Related article URL
+  related_article_url: Source Reference
   published_url: Published URL
   enter_url_for_embed: 
   - Enter the URL at which this document is embedded

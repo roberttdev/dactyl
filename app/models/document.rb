@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 class Document < ActiveRecord::Base
   include DC::Access
+  include DC::DocumentStatus
   include ActionView::Helpers::TextHelper
 
   # Accessors and constants:
@@ -33,6 +34,7 @@ class Document < ActiveRecord::Base
   belongs_to :account
   belongs_to :organization
 
+  has_one :document_status
   has_one  :docdata,              :dependent   => :destroy
   has_many :pages,                :dependent   => :destroy
   has_many :entities,             :dependent   => :destroy
@@ -179,12 +181,14 @@ class Document < ActiveRecord::Base
       :access             => PENDING,
       :page_count         => 0,
       :title              => title,
+      :study              => params[:study],
       :description        => params[:description],
       :source             => params[:source],
       :related_article    => params[:related_article],
       :remote_url         => params[:published_url] || params[:remote_url],
       :language           => params[:language] || account.language,
-      :original_extension => file_ext
+      :original_extension => file_ext,
+      :status             => STATUS_NEW
     )
     import_options = {
       :access => access,
@@ -817,7 +821,7 @@ class Document < ActiveRecord::Base
       :document_viewer_url => document_viewer_url,
       :document_viewer_js  => canonical_url(:js),
       :reviewer_count      => reviewer_count,
-      :remote_url          => remote_url,
+      :study               => study,
       :detected_remote_url => detected_remote_url,
       :publish_at          => publish_at.as_json,
       :hits                => hits,

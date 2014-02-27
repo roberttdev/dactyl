@@ -342,12 +342,6 @@ dc.ui.Toolbar = Backbone.View.extend({
       onOpen  : this._enableMenuItems,
       items   : [
         {title : _.t('edit_document_info'),       attrs: {'class' : 'multiple'},        onClick : function(){ dc.ui.DocumentDialog.open(); }},
-        {title : _.t('title'),                    attrs: {'class' : 'singular indent'}, onClick : this.editTitle},
-        {title : _.t('source'),                   attrs: {'class' : 'multiple indent'}, onClick : this.editSource},
-        {title : _.t('description'),              attrs: {'class' : 'multiple indent'}, onClick : this.editDescription},
-        {title : _.t('access_level'),             attrs: {'class' : 'multiple indent'}, onClick : this.editAccess},
-        {title : _.t('related_article_url'),      attrs: {'class' : 'multiple indent'}, onClick : this.editRelatedArticle},
-        {title : _.t('published_url'),            attrs: {'class' : 'multiple indent'}, onClick : this.editPublishedUrl},
         {title : _.t('edit_document_data'),       attrs: {'class' : 'multiple'},        onClick : this.editData},
         {title : _.t('modify_original_document'), attrs: {'class' : 'multiple'},        onClick : _.bind(this.openViewers, this, true, '#pages', null)},
         {title : _.t('remove_from_project'),      attrs: {'class' : 'multiple project'},onClick : this._removeFromSelectedProject},

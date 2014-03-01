@@ -103,6 +103,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.pdf        "/documents/:id/:slug.pdf",            :controller => :documents, :action => :send_pdf
   map.full_text  "/documents/:id/:slug.txt",            :controller => :documents, :action => :send_full_text
+  map.orig_doc   "/documents/:id/:slug.:format",        :controller => :documents, :action => :send_original
   map.page_text  "/documents/:id/preview/",             :controller => :documents, :action => :preview, :conditions => {:method => :get}
   map.page_text  "/documents/:id/pages/:page_name.txt", :controller => :documents, :action => :send_page_text, :conditions => {:method => :get}
   map.set_text   "/documents/:id/pages/:page_name.txt", :controller => :documents, :action => :set_page_text,  :conditions => {:method => :post}

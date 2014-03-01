@@ -190,6 +190,11 @@ class DocumentsController < ApplicationController
     json nil
   end
 
+  def send_original
+    return not_found unless current_document(true)
+    redirect_to current_document.orig_doc_url(:direct)
+  end
+
   def send_pdf
     return not_found unless current_document(true)
     redirect_to current_document.pdf_url(:direct)

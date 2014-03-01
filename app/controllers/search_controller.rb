@@ -10,7 +10,7 @@ class SearchController < ApplicationController
     results = {:query => @query, :documents => @documents}
     respond_to do |format|
       format.json do
-        json results
+      json results
       end
     end
   end

@@ -508,6 +508,20 @@ class Document < ActiveRecord::Base
     DC::Store::AssetStore.new.authorized_url(full_text_path)
   end
 
+  def public_original_url
+    File.join(DC::Store::AssetStore.web_root, original_file_path)
+  end
+
+  def private_original_url
+    File.join(DC.server_root, original_file_path)
+  end
+
+  def original_url(direct=false)
+    return public_original_url if public? || Rails.env.development?
+    return private_original_url unless direct
+    DC::Store::AssetStore.new.authorized_url(original_file_path)
+  end
+
   def document_viewer_url(opts={})
     suffix = ''
     suffix = "#document/p#{opts[:page]}" if opts[:page]
@@ -830,7 +844,8 @@ class Document < ActiveRecord::Base
       :project_ids         => project_ids,
       :char_count          => char_count,
       :data                => data,
-      :language            => language
+      :language            => language,
+      :original_file_path  => original_url
     }
     if opts[:annotations]
       json[:annotations_url] = annotations_url if commentable?(opts[:account])

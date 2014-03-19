@@ -287,6 +287,7 @@ workspace:
   organization: Organization
   account: Account
   accounts: Accounts
+  templates: Templates
   email: Email
   first_name: First name
   last_name: Last name
@@ -342,6 +343,11 @@ workspace:
   reviewer_email_instructions:
   - Email Instructions to %2$s
   - Email Instructions to %d Reviewers
+
+  ##############################################################
+  # Template Editing
+  new_template: New Template
+
 
   ###############################################################
   # "contact us" form

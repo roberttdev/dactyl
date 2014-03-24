@@ -16,13 +16,15 @@
     z-index: 5;
 }
 
-.template .title {
-    display: inline;
+.template_row {
+    padding: 8px;
+    height: 32px;
+}
+
+.template_row .title {
     color: #000;
     font: bold 16px/20px Helvetica, Arial;
-    margin-bottom: 2px;
-    margin-left: 64px;
-    min-height: 20px;
+    padding-left: 64px;
 }
 
 .button_cell {

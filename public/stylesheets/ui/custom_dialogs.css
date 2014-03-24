@@ -1,22 +1,22 @@
-.docalog .custom {
+.docalog, .tempalog .custom {
   width: 500px;
 }
-  .docalog .row {
+  .docalog, .tempalog .row {
     height: 30px;
     margin-bottom: 15px;
     position: relative;
     text-align: left;
   }
-    .docalog .row.tall {
+    .docalog, .tempalog .row.tall {
       height: 90px;
     }
-    .docalog .row.last {
+    .docalog, .tempalog .row.last {
       margin-bottom: 0;
     }
-  .docalog input.changed, .docalog textarea.changed {
+  .docalog, .tempalog input.changed, .docalog textarea.changed {
     border-color: #2a955c !important;
   }
-  .docalog label {
+  .docalog, .tempalog label {
     background-color: #000;
     display: block;
     max-width: 120px;
@@ -26,17 +26,17 @@
     position: absolute;
     left: 0;
   }
-  .docalog .text_input {
+  .docalog, .tempalog .text_input {
     position: absolute;
     right: 0;
     width: 370px;
   }
-  .docalog textarea.content {
+  .docalog, .tempalog textarea.content {
     float: right;
     width: 366px; height: 78px;
     display: block;
   }
-  .docalog select {
+  .docalog, .tempalog select {
     position: absolute;
     left: 115px; top: 5px;
   }

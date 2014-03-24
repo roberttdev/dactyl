@@ -5,7 +5,8 @@ dc.ui.TemplateManager = Backbone.View.extend({
 
   initialize: function(options){
     this.options = _.extend(this.options, options);
-    _.bindAll(this, 'open', 'render', 'createTemplateViews', 'createAndRender');
+    this._mainJST = JST['template/template_main'];
+    _.bindAll(this, 'open', 'render', 'createTemplateViews', 'createAndRender', 'openEditWindow');
     dc.app.navigation.bind('tab:templates', this.open);
   },
 
@@ -13,11 +14,11 @@ dc.ui.TemplateManager = Backbone.View.extend({
   render: function() {
     this.$el = $('#' + this.id);
     //Main
-    this.$el.html(JST['template/template_main'](this.options));
+    this.$el.html(this._mainJST(this.options));
     //Listing rows
     this.$('.template_list').append(_.map(this.templateList, function(view, cid){
         view.render();
-        view.$('.icon').on('click', {template_id: view.model.get('id')}, this.openEditWindow);
+        view.$('#template_edit').on('click', {template_id: view.model.get('id')}, this.openEditWindow);
         return view.$el;
     }, this));
 
@@ -53,7 +54,7 @@ dc.ui.TemplateManager = Backbone.View.extend({
 
   //Opens editing window.  Template ID to edit is passed in event data ('template_id').
   openEditWindow: function(event) {
-    alert('OPEN SESAME - ' + event.data.template_id);
+      dc.ui.TemplateDataDialog.open(this.collection.get(event.data.template_id));
   },
 
 

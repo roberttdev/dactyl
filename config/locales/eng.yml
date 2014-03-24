@@ -347,6 +347,10 @@ workspace:
   ##############################################################
   # Template Editing
   new_template: New Template
+  template_name: Template Name
+  name_explanation: The name that users will use to reference the template.
+  edit_template: Edit Template
+  template_name_required: The template name is required.
 
 
   ###############################################################

@@ -139,6 +139,11 @@ ActionController::Routing::Routes.draw do |map|
     :remove_documents => :post
   }
 
+  # Templates
+  map.template_json "/templates/index.json", :controller => :templates, :action => :index
+  map.resources :templates
+
+
   # Home pages.
   map.with_options :controller => 'home' do |home|
     home.contributors   '/contributors',  :action => 'contributors'

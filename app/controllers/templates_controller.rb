@@ -72,24 +72,14 @@ class TemplatesController < ApplicationController
     json account.canonical( :membership=>membership )
   end
 
-  # Journalists are authorized to update any account in the organization.
-  # Think about what the desired level of access control is.
+  # Update a template.
   def update
-    account = current_organization.accounts.find(params[:id])
-    return json(nil, 403) unless account && current_account.allowed_to_edit_account?(account, current_organization)
-    unless account.update_attributes pick(params, :first_name, :last_name, :email,:language, :document_language)
-      return json({ "errors" => account.errors.to_a.map{ |field, error| "#{field} #{error}" } }, 409)
+    template = GroupTemplate.find(params[:id])
+    unless template.update_attributes pick(params, :name)
+      return json({ "errors" => template.errors.to_a.map{ |field, error| "#{field} #{error}" } }, 409)
     end
-    role = pick(params, :role)
-    #account.update_attributes(role) if !role.empty? && current_account.admin?
-    membership = current_organization.role_of(account)
-    membership.update_attributes(role) if !role.empty? && current_account.admin?
-    password = pick(params, :password)[:password]
-    if (current_account.id == account.id) && password
-      account.password = password
-      account.save
-    end
-    json account.canonical( :membership=>membership )
+
+    return json({"success" => true})
   end
 
   # Removing an account only changes their role so that they cannot

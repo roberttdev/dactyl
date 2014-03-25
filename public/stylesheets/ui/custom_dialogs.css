@@ -1,22 +1,22 @@
-.docalog, .tempalog .custom {
+.docalog .custom, .tempalog .custom {
   width: 500px;
 }
-  .docalog, .tempalog .row {
+  .docalog .row, .tempalog .row {
     height: 30px;
     margin-bottom: 15px;
     position: relative;
     text-align: left;
   }
-    .docalog, .tempalog .row.tall {
+    .docalog .row.tall, .tempalog .row.tall {
       height: 90px;
     }
-    .docalog, .tempalog .row.last {
+    .docalog .row.last, .tempalog .row.last {
       margin-bottom: 0;
     }
-  .docalog, .tempalog input.changed, .docalog textarea.changed {
+  .docalog input.changed, .tempalog input.changed, .docalog textarea.changed, .tempalog textarea.changed {
     border-color: #2a955c !important;
   }
-  .docalog, .tempalog label {
+  .docalog label, .tempalog label {
     background-color: #000;
     display: block;
     max-width: 120px;
@@ -26,17 +26,17 @@
     position: absolute;
     left: 0;
   }
-  .docalog, .tempalog .text_input {
+  .docalog .text_input, .tempalog .text_input {
     position: absolute;
     right: 0;
     width: 370px;
   }
-  .docalog, .tempalog textarea.content {
+  .docalog textarea.content, .tempalog textarea.content {
     float: right;
     width: 366px; height: 78px;
     display: block;
   }
-  .docalog, .tempalog select {
+  .docalog select, .tempalog select {
     position: absolute;
     left: 115px; top: 5px;
   }

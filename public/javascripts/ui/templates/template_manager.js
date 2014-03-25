@@ -2,11 +2,12 @@ dc.ui.TemplateManager = Backbone.View.extend({
   id: "template_manager_container",
   className: 'templates_tab_content',
   templateList: [],
+  _newTemplate: null,
 
   initialize: function(options){
     this.options = _.extend(this.options, options);
     this._mainJST = JST['template/template_main'];
-    _.bindAll(this, 'open', 'render', 'createTemplateViews', 'createAndRender', 'openEditWindow');
+    _.bindAll(this, 'open', 'render', 'createTemplateViews', 'createAndRender', 'openCreateWindow', 'addNewTemplateToList');
     dc.app.navigation.bind('tab:templates', this.open);
   },
 
@@ -15,10 +16,13 @@ dc.ui.TemplateManager = Backbone.View.extend({
     this.$el = $('#' + this.id);
     //Main
     this.$el.html(this._mainJST(this.options));
+
+    //Link event(s)
+    this.$('#new_template').on('click', {}, this.openCreateWindow);
+
     //Listing rows
     this.$('.template_list').append(_.map(this.templateList, function(view, cid){
-        view.render();
-        view.$('#template_edit').on('click', {template_id: view.model.get('id')}, this.openEditWindow);
+        view.renderWithEvents();
         return view.$el;
     }, this));
 
@@ -52,9 +56,24 @@ dc.ui.TemplateManager = Backbone.View.extend({
       this.render();
   },
 
-  //Opens editing window.  Template ID to edit is passed in event data ('template_id').
-  openEditWindow: function(event) {
-      dc.ui.TemplateDataDialog.open(this.collection.get(event.data.template_id));
+
+  openCreateWindow: function() {
+      this._newTemplate = new dc.model.Template();
+      this._newTemplate.on('change', this.addNewTemplateToList, this);
+      dc.ui.TemplateDataDialog.open(this._newTemplate);
+  },
+
+
+  //Add new template to collection and view, and remove events meant to track creation
+  addNewTemplateToList: function() {
+      this.collection.add(this._newTemplate);
+      this._newTemplate.off('change', this.addNewTemplateToList);
+      _newTemplateView = new dc.ui.TemplateListing({
+          model: this._newTemplate
+      }, this);
+      this.templateList[this._newTemplate.id] = _newTemplateView;
+      _newTemplateView.renderWithEvents();
+      this.$('.template_list').append(_newTemplateView.$el);
   },
 
 

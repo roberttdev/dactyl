@@ -140,8 +140,12 @@ ActionController::Routing::Routes.draw do |map|
   }
 
   # Templates
-  map.template_json "/templates/index.json", :controller => :templates, :action => :index
-  map.resources :templates
+  map.template_json '/templates/index.json', :controller => :templates, :action => :index
+  map.bulk_fields   '/templates/:template_id/template_fields', :controller => :template_fields, :action => 'bulk_update', :conditions => {:method => :put}
+  map.resources :templates do |template|
+    template.resources :template_fields
+  end
+
 
 
   # Home pages.

@@ -34,12 +34,16 @@ class TemplatesController < ApplicationController
   end
 
 
+  # Pull a specific template
+  def show
+    json GroupTemplate.find(params[:id])
+  end
+
+
   # Create new template
   def create
     template_attributes = pick(params, :name)
-    GroupTemplate.create(template_attributes)
-
-    json({"success" => true})
+    json GroupTemplate.create(template_attributes)
   end
 
 
@@ -57,7 +61,7 @@ class TemplatesController < ApplicationController
   # Delete template
   def destroy
     template = GroupTemplate.find(params[:id])
-    template.delete()
+    template.destroy()
     json({"success" => true})
   end
 

@@ -4,9 +4,15 @@
       <%= _.t('template_name') %>:
   </label>
   <div class="text_input dark small">
-    <input name="template_name" id="template_name" class="attribute" type="text" />
+    <input name="template_name" id="template_name" class="attribute" type="text" value="<%=name%>"/>
   </div>
-  <br class="clear" />
 </div>
+<div class="row">
+    <label class="title"><%= _.t('template_fields') %></label>
+    <div id="new_field" class="minibutton plus float_right dark"><div class="icon white_plus"></div><%= _.t('new')%></div>
+</div>
+<div class="field_list"></div>
+
+
 
 

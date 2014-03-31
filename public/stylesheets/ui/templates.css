@@ -16,6 +16,18 @@
     z-index: 5;
 }
 
+#new_field {
+    width: 40px;
+    margin-right: 250px;
+}
+
+#field_listing.text_input {
+    position: relative;
+    margin-left: 32px;
+    width: 256px;
+    height: 32px;
+}
+
 .template_row {
     padding: 8px;
     height: 32px;
@@ -34,3 +46,13 @@
 .minibutton {
     margin-left: 8px;
 }
+
+.minibutton.delete {
+    position: relative;
+    bottom  : 24px;
+    left   : 280px;
+}
+
+
+
+

@@ -287,7 +287,6 @@ workspace:
   organization: Organization
   account: Account
   accounts: Accounts
-  templates: Templates
   email: Email
   first_name: First name
   last_name: Last name
@@ -346,11 +345,15 @@ workspace:
 
   ##############################################################
   # Template Editing
+  templates: Templates
   new_template: New Template
   template_name: Template Name
   name_explanation: The name that users will use to reference the template.
   edit_template: Edit Template
   template_name_required: The template name is required.
+  template_fields: Template Fields
+  new: New
+  blank_field_error: A template field is blank.  Please enter a name or delete it.
 
 
   ###############################################################

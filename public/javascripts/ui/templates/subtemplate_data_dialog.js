@@ -1,6 +1,6 @@
-dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
+dc.ui.SubtemplateDataDialog = dc.ui.Dialog.extend({
 
-  id                : 'edit_template_dialog',
+  id                : 'edit_subtemplate_dialog',
   className         : 'dialog tempalog',
   template          : null,
   fieldViewList     : [],
@@ -20,21 +20,21 @@ dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
   constructor : function(template) {
     this.events       = _.extend({}, this.events, this.dataEvents);
     this.template         = template;
-    this._mainJST = JST['template/template_dialog'];
+    this._mainJST = JST['template/subtemplate_dialog'];
     _.bindAll(this, 'render', 'createFieldViews', 'createFieldView', 'createFieldViewsAndRender',
-        'addNewField', 'saveAndClose', 'saveAndAddField', 'showErrors', 'removeFieldViewFromList');
-    dc.ui.Dialog.call(this, {mode : 'custom', title : _.t('edit_template'), saveText : _.t('save') });
+        'saveAndClose', 'showErrors', 'removeFieldViewFromList');
+    dc.ui.Dialog.call(this, {mode : 'custom', title : _.t('edit_subtemplate'), saveText : _.t('save') });
     this.template.on('invalid', this.showErrors);
 
     //Clear fieldViewList in case pointers persist
     this.fieldViewList.length = 0;
 
     //If template already exists, fetch with fields; otherwise go straight to rendering
-    if(this.template.id != null) {
-        this.template.fetchWithFields(this.createFieldViewsAndRender);
-    } else {
+    //if(this.template.id != null) {
+        //this.template.fetchWithFields(this.createFieldViewsAndRender);
+   // } else {
         this.render();
-    }
+   // }
 
     $(document.body).append(this.el);
   },
@@ -47,7 +47,7 @@ dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
 
     //Main template
     this._container.html(this._mainJST({
-      name          : this.template.get('name')
+      name          : this.template.get('sub_name')
     }));
 
     //Field listings
@@ -82,24 +82,6 @@ dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
   },
 
 
-  //New templates need to save themselves before adding fields.  This does that if necessary before adding a field.
-  saveAndAddField: function() {
-      if(this.template.id == null){
-          this.save(this.addNewField);
-      } else {
-          this.addNewField();
-      }
-  },
-
-
-  //Add blank field to view
-  addNewField: function() {
-      view = this.createFieldView(new dc.model.TemplateField());
-      view.render();
-      this.$('.field_list').append(view.$el);
-  },
-
-
   //Responds to event of field view being deleted by removing from list.
   //It is passed the initiating view from the event trigger.
   removeFieldViewFromList: function(view) {
@@ -114,7 +96,7 @@ dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
     $('input').removeClass('error');
 
     //Validate that no field names are blank.  If one is, throw error.
-    _fieldError = false;
+    /*_fieldError = false;
     this.fieldViewList.every(function(view){
         if( view.$('#field_name').val() == null || view.$('#field_name').val().length == 0 ){
             view.$('#field_name').addClass('error');
@@ -125,12 +107,12 @@ dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
     });
     if(_fieldError){
         return _thisView.error(_.t('blank_field_error'));
-    }
+    }*/
 
     //Push template name from view to model
-    this.template.set({name: this.$('#template_name').val()});
+    this.template.set({sub_name: this.$('#template_name').val()});
     //Reset collection and re-push edited fields from view to model
-    if( this.template.template_fields != null && this.template.template_fields.length > 0 ){
+    /*if( this.template.template_fields != null && this.template.template_fields.length > 0 ){
         this.template.template_fields.reset();
     }
     this.fieldViewList.forEach(function(view){
@@ -141,7 +123,7 @@ dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
                 template_id: _thisView.template.get('id')
             });
        }
-    });
+    });*/
 
     //Trigger save
     this.template.saveAll(success);
@@ -174,7 +156,7 @@ dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
   // This static method is used for conveniently opening the dialog for
   // any selected template.
   open : function(template) {
-    new dc.ui.TemplateDataDialog(template);
+    new dc.ui.SubtemplateDataDialog(template);
   }
 
 });

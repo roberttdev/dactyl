@@ -7,7 +7,7 @@ dc.ui.TemplateManager = Backbone.View.extend({
   initialize: function(options){
     this.options = _.extend(this.options, options);
     this._mainJST = JST['template/template_main'];
-    _.bindAll(this, 'open', 'render', 'createTemplateViews', 'createAndRender', 'openCreateWindow', 'addNewTemplateToList');
+    _.bindAll(this, 'open', 'render', 'createTemplateViews', 'createTemplateView', 'createAndRender', 'openCreateWindow', 'addNewTemplateToList', 'openSubtemplateWindow');
     dc.app.navigation.bind('tab:templates', this.open);
   },
 
@@ -22,7 +22,7 @@ dc.ui.TemplateManager = Backbone.View.extend({
 
     //Listing rows
     this.$('.template_list').append(_.map(this.templateList, function(view, cid){
-        view.renderWithEvents();
+        view.render();
         return view.$el;
     }, this));
 
@@ -34,7 +34,7 @@ dc.ui.TemplateManager = Backbone.View.extend({
     if(!this.collection) {
         //If this is first open request, fetch data, initialize views, and render
         this.collection = new dc.model.Templates();
-        this.collection.fetch({success: this.createAndRender, error: this.error});
+        this.collection.fetch({data:{subtemplates: true}, success: this.createAndRender, error: this.error});
     }
 
     dc.app.navigation.open('templates', true);
@@ -44,10 +44,18 @@ dc.ui.TemplateManager = Backbone.View.extend({
 
   createTemplateViews: function() {
     this.collection.each(function(template) {
-        this.templateList[template.id] = new dc.ui.TemplateListing({
-            model: template
-        }, this);
+        this.createTemplateView(template);
     }, this);
+  },
+
+
+  createTemplateView: function(model) {
+      _templateView = new dc.ui.TemplateListing({
+          model: model
+      }, this);
+      this.templateList.push(_templateView);
+      _templateView.on('newSubtemplateRequest', this.openSubtemplateWindow);
+      return _templateView;
   },
 
 
@@ -64,16 +72,29 @@ dc.ui.TemplateManager = Backbone.View.extend({
   },
 
 
+  openSubtemplateWindow:  function(template_id) {
+      this._newTemplate = new dc.model.Subtemplate({template_id: template_id});
+      this._newTemplate.on('change', this.addNewSubtemplateToList, this);
+      dc.ui.SubtemplateDataDialog.open(this._newTemplate);
+  },
+
+
   //Add new template to collection and view, and remove events meant to track creation
   addNewTemplateToList: function() {
       this.collection.add(this._newTemplate);
       this._newTemplate.off('change', this.addNewTemplateToList);
-      _newTemplateView = new dc.ui.TemplateListing({
-          model: this._newTemplate
-      }, this);
-      this.templateList[this._newTemplate.id] = _newTemplateView;
-      _newTemplateView.renderWithEvents();
+      _newTemplateView = this.createTemplateView(this._newTemplate);
+      _newTemplateView.render();
       this.$('.template_list').append(_newTemplateView.$el);
+  },
+
+
+  //Look up template view and tell it to add the new subtemplate
+  addNewSubtemplateToList: function() {
+      this._newTemplate.off('change', this.addNewSubtemplateToList);
+      _template = this.collection.get(this._newTemplate.get('template_id'));
+      _templateView = this.templateList[this.collection.indexOf(_template)];
+      _templateView.addNewSubtemplate(this._newTemplate);
   },
 
 

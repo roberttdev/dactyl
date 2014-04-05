@@ -1,22 +1,37 @@
 dc.ui.TemplateListing = Backbone.View.extend({
+    events: {
+        'click #new_subtemplate':   'sendNewSubtemplateRequest',
+        'click #template_edit'  :   'openEditWindow',
+        'click #template_delete':   'confirmDelete'
+    },
+
     initialize: function() {
-        _.bindAll(this, 'renderWithEvents', 'openEditWindow', 'confirmDelete', 'deleteTemplate');
+        _.bindAll(this, 'openEditWindow', 'confirmDelete', 'deleteTemplate', 'sendNewSubtemplateRequest', 'addNewSubtemplate');
         this.model.on('change', this.updateView, this);
         this.model.on('destroy', this.deleteView, this);
     },
 
+
     render: function(options) {
-        this.$el = $(JST['template/template_listing']({
-            name: this.model.get('name')
+        _thisView = this;
+
+        //Render this template
+        _thisView.$el.html(JST['template/template_listing']({
+            name: _thisView.model.get('name')
         }));
-        return this;
+
+        //Render subtemplates
+        $.each(_thisView.model.subtemplates.models, function(index, subtemplate){
+           _thisView.showSubtemplate(subtemplate);
+        });
+        return _thisView;
     },
 
 
-    renderWithEvents: function(options) {
-        this.render(options);
-        this.$('#template_edit').on('click', {}, this.openEditWindow);
-        this.$('#template_delete').on('click', {}, this.confirmDelete);
+    showSubtemplate: function(model) {
+        _subView = new dc.ui.SubtemplateListing({model: model});
+        _subView.render();
+        this.$('.subtemplate_container').append(_subView.$el);
     },
 
 
@@ -47,5 +62,19 @@ dc.ui.TemplateListing = Backbone.View.extend({
     deleteTemplate: function(template) {
         this.model.destroy();
         return true;
+    },
+
+
+    //Add new subtemplate to view
+    addNewSubtemplate: function(subtemplate) {
+        this.model.subtemplates.add(subtemplate);
+        this.showSubtemplate(subtemplate);
+
+    },
+
+
+    //Send notification for new subtemplate request, along with data about which template it is
+    sendNewSubtemplateRequest: function() {
+        this.trigger('newSubtemplateRequest', this.model.get('id'));
     }
 })

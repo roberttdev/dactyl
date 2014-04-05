@@ -1,0 +1,2 @@
+module SubtemplatesHelper
+end

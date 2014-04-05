@@ -19,8 +19,14 @@ class TemplatesController < ApplicationController
         end
         redirect_to '/home'
       end
+
       format.json do
-        json GroupTemplate.all()
+        if params[:subtemplates] == 'true'
+          #Include subtemplates
+          json GroupTemplate.all(:include => :subtemplates).to_json(:include => :subtemplates)
+        else
+          json GroupTemplate.all()
+        end
       end
     end
   end

@@ -354,6 +354,8 @@ workspace:
   template_fields: Template Fields
   new: New
   blank_field_error: A template field is blank.  Please enter a name or delete it.
+  new_subtemplate: New Subtemplate
+  edit_subtemplate: Edit Subtemplate
 
 
   ###############################################################

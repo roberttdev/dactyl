@@ -144,6 +144,7 @@ ActionController::Routing::Routes.draw do |map|
   map.bulk_fields   '/templates/:template_id/template_fields', :controller => :template_fields, :action => 'bulk_update', :conditions => {:method => :put}
   map.resources :templates do |template|
     template.resources :template_fields
+    template.resources :subtemplates
   end
 
 

@@ -1,0 +1,2 @@
+module SubtemplateFieldsHelper
+end

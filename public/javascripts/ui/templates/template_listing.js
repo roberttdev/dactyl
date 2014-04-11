@@ -1,13 +1,13 @@
 dc.ui.TemplateListing = Backbone.View.extend({
     events: {
-        'click #new_subtemplate':   'sendNewSubtemplateRequest',
+        'click #new_subtemplate':   'openSubtemplateWindow',
         'click #template_edit'  :   'openEditWindow',
         'click #template_delete':   'confirmDelete'
     },
 
     initialize: function() {
-        _.bindAll(this, 'openEditWindow', 'confirmDelete', 'deleteTemplate', 'sendNewSubtemplateRequest', 'addNewSubtemplate');
-        this.model.on('change', this.updateView, this);
+        _.bindAll(this, 'openEditWindow', 'confirmDelete', 'deleteTemplate', 'addNewSubtemplate', 'openSubtemplateWindow');
+        this.model.on('sync', this.updateView, this);
         this.model.on('destroy', this.deleteView, this);
     },
 
@@ -29,14 +29,14 @@ dc.ui.TemplateListing = Backbone.View.extend({
 
 
     showSubtemplate: function(model) {
-        _subView = new dc.ui.SubtemplateListing({model: model});
+        _subView = new dc.ui.SubtemplateListing({model: model, parentTemplate: this.model});
         _subView.render();
         this.$('.subtemplate_container').append(_subView.$el);
     },
 
 
     updateView: function(options) {
-       this.$('.title').html(this.model.get('name'));
+       this.$('.title.template').html(this.model.get('name'));
     },
 
 
@@ -66,15 +66,16 @@ dc.ui.TemplateListing = Backbone.View.extend({
 
 
     //Add new subtemplate to view
-    addNewSubtemplate: function(subtemplate) {
-        this.model.subtemplates.add(subtemplate);
-        this.showSubtemplate(subtemplate);
+    addNewSubtemplate: function() {
+        this.model.subtemplates.add(this._newSubtemplate);
+        this.showSubtemplate(this._newSubtemplate);
 
     },
 
 
-    //Send notification for new subtemplate request, along with data about which template it is
-    sendNewSubtemplateRequest: function() {
-        this.trigger('newSubtemplateRequest', this.model.get('id'));
+    openSubtemplateWindow:  function(template_id) {
+        this._newSubtemplate = new dc.model.Subtemplate({template_id: this.model.id});
+        this._newSubtemplate.once('sync', this.addNewSubtemplate, this);
+        dc.ui.SubtemplateDataDialog.open(this._newSubtemplate, this.model);
     }
 })

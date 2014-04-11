@@ -147,6 +147,9 @@ ActionController::Routing::Routes.draw do |map|
     template.resources :subtemplates
   end
 
+  #Subtemplate fields
+  map.resources :subtemplate_fields, :path_prefix => '/subtemplates/:subtemplate_id'
+
 
 
   # Home pages.

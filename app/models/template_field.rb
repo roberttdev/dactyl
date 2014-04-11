@@ -1,11 +1,5 @@
 class TemplateField < ActiveRecord::Base
   belongs_to :group_template, :foreign_key => "template_id"
+  has_many :subtemplate_fields, :foreign_key => "field_id", :dependent => :delete_all
 
-  def to_json(opts={})
-    json = {
-        :id => id,
-        :template_id => template_id,
-        :field_name => field_name
-    }.to_json()
-  end
 end

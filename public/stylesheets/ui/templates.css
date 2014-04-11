@@ -21,11 +21,25 @@
     margin-right: 250px;
 }
 
-#field_listing.text_input {
-    position: relative;
+#field_listing {
     margin-left: 32px;
     width: 256px;
+    height: 24px;
+}
+
+#field_listing.text_input {
+    position: relative;
     height: 32px;
+}
+
+#field_listing .title {
+    display: inline-block;
+    width: 200px;
+    font-size: 11px;
+}
+
+#field_listing .checkbox {
+    display: inline-block;
 }
 
 .template_list {

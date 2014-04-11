@@ -7,7 +7,8 @@ class TemplateFieldsController < ApplicationController
   end
 
   def destroy
-    TemplateField.delete(params[:id])
+    template = TemplateField.find(params[:id])
+    template.destroy()
     json({:success => 'true'})
   end
 

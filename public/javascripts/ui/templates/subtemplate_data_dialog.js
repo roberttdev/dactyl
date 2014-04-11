@@ -3,6 +3,7 @@ dc.ui.SubtemplateDataDialog = dc.ui.Dialog.extend({
   id                : 'edit_subtemplate_dialog',
   className         : 'dialog tempalog',
   template          : null,
+  parentTemplate    : null,
   fieldViewList     : [],
 
   dataEvents : {
@@ -12,29 +13,37 @@ dc.ui.SubtemplateDataDialog = dc.ui.Dialog.extend({
       'focus textarea'    : '_addFocus',
       'blur input'        : '_removeFocus',
       'blur textarea'     : '_removeFocus',
-      'change input'      : '_markChanged',
-      'click #new_field'  : 'saveAndAddField'
+      'change input'      : '_markChanged'
   },
 
 
-  constructor : function(template) {
-    this.events       = _.extend({}, this.events, this.dataEvents);
-    this.template         = template;
+  constructor : function(subtemplate, parentTemplate) {
+    this.events         = _.extend({}, this.events, this.dataEvents);
+    this.template       = subtemplate;
+    this.parentTemplate = parentTemplate;
     this._mainJST = JST['template/subtemplate_dialog'];
     _.bindAll(this, 'render', 'createFieldViews', 'createFieldView', 'createFieldViewsAndRender',
         'saveAndClose', 'showErrors', 'removeFieldViewFromList');
     dc.ui.Dialog.call(this, {mode : 'custom', title : _.t('edit_subtemplate'), saveText : _.t('save') });
     this.template.on('invalid', this.showErrors);
 
+    _thisView = this;
+
     //Clear fieldViewList in case pointers persist
     this.fieldViewList.length = 0;
 
-    //If template already exists, fetch with fields; otherwise go straight to rendering
-    //if(this.template.id != null) {
-        //this.template.fetchWithFields(this.createFieldViewsAndRender);
-   // } else {
-        this.render();
-   // }
+    //Fetch parent and/or subtemplate fields if they haven't been pulled; otherwise, render as normal
+    if(this.parentTemplate.template_fields.length == 0 && this.template.subtemplate_fields.length == 0) {
+        this.parentTemplate.fetchFields(function(){
+            _thisView.template.fetchFields(_thisView.createFieldViewsAndRender);
+        });
+    } else if(this.parentTemplate.template_fields.length == 0) {
+        this.parentTemplate.fetchFields(this.createFieldViewsAndRender);
+    } else if(this.template.subtemplate_fields.length == 0) {
+        this.template.fetchFields(this.createFieldViewsAndRender);
+    } else {
+        this.createFieldViewsAndRender();
+    }
 
     $(document.body).append(this.el);
   },
@@ -68,16 +77,19 @@ dc.ui.SubtemplateDataDialog = dc.ui.Dialog.extend({
 
   createFieldViews: function() {
       _thisView = this;
-      this.template.template_fields.each(function(field) {
+      this.parentTemplate.template_fields.each(function(field) {
           _thisView.createFieldView(field);
       }, _thisView);
   },
 
 
   createFieldView: function(field) {
-      _fieldView = new dc.ui.TemplateFieldListing({model: field}, this);
+      _selected = false;
+      _fieldMatches = this.template.subtemplate_fields.where({field_id: field.id});
+      if( _fieldMatches != null && _fieldMatches.length > 0 ){ _selected = true; }
+      _fieldView = new dc.ui.SubtemplateFieldListing({model: field, selected: _selected}, this);
       this.fieldViewList.push(_fieldView);
-      _fieldView.on('destroy', this.removeFieldViewFromList, this);
+      _fieldView.on('fieldClicked', this.changeFieldStatus, this);
       return _fieldView;
   },
 
@@ -95,38 +107,11 @@ dc.ui.SubtemplateDataDialog = dc.ui.Dialog.extend({
     //Clear error class from all inputs
     $('input').removeClass('error');
 
-    //Validate that no field names are blank.  If one is, throw error.
-    /*_fieldError = false;
-    this.fieldViewList.every(function(view){
-        if( view.$('#field_name').val() == null || view.$('#field_name').val().length == 0 ){
-            view.$('#field_name').addClass('error');
-            _fieldError = true;
-            return false;
-        }
-        return true;
-    });
-    if(_fieldError){
-        return _thisView.error(_.t('blank_field_error'));
-    }*/
-
     //Push template name from view to model
     this.template.set({sub_name: this.$('#template_name').val()});
-    //Reset collection and re-push edited fields from view to model
-    /*if( this.template.template_fields != null && this.template.template_fields.length > 0 ){
-        this.template.template_fields.reset();
-    }
-    this.fieldViewList.forEach(function(view){
-       if( view.$('#field_name').val() != null && view.$('#field_name').val().length > 0 ){
-            _thisView.template.template_fields.add({
-                id  : view.model.get('id'),
-                field_name: view.$('#field_name').val(),
-                template_id: _thisView.template.get('id')
-            });
-       }
-    });*/
 
     //Trigger save
-    this.template.saveAll(success);
+    this.template.save({},{success: success});
   },
 
 
@@ -137,10 +122,11 @@ dc.ui.SubtemplateDataDialog = dc.ui.Dialog.extend({
     });
   },
 
+
   //Handler for errors returned from model validation
   showErrors: function(model, errors) {
     //Handle first error only
-    if(errors[0].class == 'name'){ this.$('#template_name').addClass('error'); }
+    if(errors[0].class == 'sub_name'){ this.$('#template_name').addClass('error'); }
 
     return this.error(errors[0].message);
   },
@@ -149,14 +135,35 @@ dc.ui.SubtemplateDataDialog = dc.ui.Dialog.extend({
   // On change, mark input field as dirty.
   _markChanged : function(e) {
       $(e.target).addClass('change');
+  },
+
+
+  //Change subtemplate field status and update collection. Expected arguments passed in:
+  //  *field_id
+  //  *action ('add' or 'delete')
+  changeFieldStatus: function(args) {
+      _fieldId = parseInt(_fieldId);
+      if( args.action == 'add' ){
+          _newModel = new dc.model.SubtemplateField({
+              template_id   : this.parentTemplate.id,
+              subtemplate_id: this.template.id,
+              field_id      : _fieldId
+          });
+          _newModel.save();
+          this.template.subtemplate_fields.add(_newModel);
+      } else if( args.action == 'delete' ) {
+          _matchingFields = this.template.subtemplate_fields.where({field_id: _fieldId});
+          if(_matchingFields != null && _matchingFields.length > 0 ){ _matchingFields[0].destroy(); }
+      }
   }
+
 
 }, {
 
   // This static method is used for conveniently opening the dialog for
   // any selected template.
-  open : function(template) {
-    new dc.ui.SubtemplateDataDialog(template);
+  open : function(subtemplate, parentTemplate) {
+    new dc.ui.SubtemplateDataDialog(subtemplate, parentTemplate);
   }
 
 });

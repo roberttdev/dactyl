@@ -29,9 +29,9 @@ dc.ui.TemplateDataDialog = dc.ui.Dialog.extend({
     //Clear fieldViewList in case pointers persist
     this.fieldViewList.length = 0;
 
-    //If template already exists, fetch with fields; otherwise go straight to rendering
+    //If template already exists, fetch fields; otherwise go straight to rendering
     if(this.template.id != null) {
-        this.template.fetchWithFields(this.createFieldViewsAndRender);
+        this.template.fetchFields(this.createFieldViewsAndRender);
     } else {
         this.render();
     }

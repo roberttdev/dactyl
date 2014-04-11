@@ -1,3 +1,4 @@
 class SubtemplateField < ActiveRecord::Base
-  has_one :subtemplate
+  belongs_to :subtemplate
+  has_one :template_field
 end

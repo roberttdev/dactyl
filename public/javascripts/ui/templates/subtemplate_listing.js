@@ -1,12 +1,15 @@
 dc.ui.SubtemplateListing = Backbone.View.extend({
+    parentTemplate: null,
     events: {
         'click #subtemplate_edit'  :   'openEditWindow',
         'click #subtemplate_delete':   'confirmDelete'
     },
 
-    initialize: function() {
+    //Initialize: expects a 'parentTemplate' TemplateModel passed in argument hash
+    initialize: function(args) {
+        this.parentTemplate = args.parentTemplate;
         _.bindAll(this, 'openEditWindow', 'confirmDelete', 'deleteSubtemplate');
-        this.model.on('change', this.updateView, this);
+        this.model.on('sync', this.updateView, this);
         this.model.on('destroy', this.deleteView, this);
     },
 
@@ -32,7 +35,7 @@ dc.ui.SubtemplateListing = Backbone.View.extend({
 
     //Opens editing window.  Template ID to edit is passed in event data ('template_id').
     openEditWindow: function(event) {
-        dc.ui.SubtemplateDataDialog.open(this.model);
+        dc.ui.SubtemplateDataDialog.open(this.model, this.parentTemplate);
     },
 
 
